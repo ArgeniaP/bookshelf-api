@@ -1,6 +1,31 @@
 const handler = require('./handler')
-const bookshelf = require('./bookshelf')
 
-const routes = []
+const routes = [
+  {
+    method: 'POST',
+    path: '/books',
+    handler: handler.addNewBook
+  },
+  {
+    method: 'GET',
+    path: '/books',
+    handler: handler.getAllBooks
+  },
+  {
+    method: 'GET',
+    path: '/books/{id}',
+    handler: handler.getBookById
+  },
+  {
+    method: 'PUT',
+    path: '/books/{id}',
+    handler: handler.editBookById
+  },
+  {
+    method: 'DELETE',
+    path: '/books/{id}',
+    handler: handler.deleteBookById
+  }
+]
 
 module.exports = routes
