@@ -78,9 +78,70 @@ const handler = {
     return response
   },
 
-  editBookById: () => {},
+  editBookById: (request, h) => {
+    const { id } = request.params
 
-  deleteBookById: () => {}
+    const data = request.payload
+    const updatedAt = new Date().toISOString()
+
+    if (!data.name || data.readPage > data.pageCount) {
+      const message = !data.name ? 'Mohon isi nama buku' : 'readPage tidak boleh lebih besar dari pageCount'
+      const response = h.response({
+        status: 'fail',
+        message: `Gagal memperbarui buku. ${message}`
+      })
+      response.code(400)
+      return response
+    }
+
+    const index = books.findIndex((book) => book.id === id)
+
+    if (index !== -1) {
+      books[index] = {
+        ...books[index],
+        ...data,
+        updatedAt
+      }
+
+      const response = h.response({
+        status: 'success',
+        message: 'Buku berhasil diperbarui'
+      })
+      response.code(200)
+      return response
+    }
+
+    const response = h.response({
+      status: 'fail',
+      message: 'Gagal memperbarui Buku. Id tidak ditemukan'
+    })
+    response.code(404)
+    return response
+  },
+
+  deleteBookById: (request, h) => {
+    const { id } = request.params
+
+    const index = books.findIndex((book) => book.id === id)
+
+    if (index !== -1) {
+      books.splice(index, 1)
+
+      const response = h.response({
+        status: 'success',
+        message: 'Buku berhasil dihapus'
+      })
+      response.code(200)
+      return response
+    }
+
+    const response = h.response({
+      status: 'fail',
+      message: 'Buku gagal dihapus. Id tidak ditemukan'
+    })
+    response.code(404)
+    return response
+  }
 }
 
 module.exports = handler
