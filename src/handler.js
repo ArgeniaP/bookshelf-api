@@ -74,6 +74,30 @@ const handler = {
       }
     }
 
+    if (query.finished) {
+      if (query.finished === '1') {
+        const response = h.response({
+          status: 'success',
+          data: {
+            books: books.filter((book) => book.finished === true).map(hide)
+          }
+        })
+        response.code(200)
+        return response
+      }
+
+      if (query.finished === '0') {
+        const response = h.response({
+          status: 'success',
+          data: {
+            books: books.filter((book) => book.finished === false).map(hide)
+          }
+        })
+        response.code(200)
+        return response
+      }
+    }
+
     const response = h.response({
       status: 'status',
       data: {
