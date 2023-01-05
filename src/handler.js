@@ -3,7 +3,6 @@ const books = require('./bookshelf')
 
 const handler = {
   addNewBook: (request, h) => {
-    // const {name, year, author, summary, publisher, pageCount, readPage, reading} = request.payload
     const data = request.payload
 
     if (!data.name || data.readPage > data.pageCount) {
@@ -47,12 +46,43 @@ const handler = {
     return response
   },
 
-  getAllBooks: () => ({
-    status: 'success',
-    data: {
-      books
+  getAllBooks: (request, h) => {
+    const hide = (value) => { return { id: value.id, name: value.name, publisher: value.publisher } }
+    const query = request.query
+
+    if (query.reading) {
+      if (query.reading === '1') {
+        const response = h.response({
+          status: 'success',
+          data: {
+            books: books.filter((book) => book.reading === true).map(hide)
+          }
+        })
+        response.code(200)
+        return response
+      }
+
+      if (query.reading === '0') {
+        const response = h.response({
+          status: 'success',
+          data: {
+            books: books.filter((book) => book.reading === false).map(hide)
+          }
+        })
+        response.code(200)
+        return response
+      }
     }
-  }),
+
+    const response = h.response({
+      status: 'status',
+      data: {
+        books: books.map(hide)
+      }
+    })
+    response.code(200)
+    return response
+  },
 
   getBookById: (request, h) => {
     const { id } = request.params
@@ -113,7 +143,7 @@ const handler = {
 
     const response = h.response({
       status: 'fail',
-      message: 'Gagal memperbarui Buku. Id tidak ditemukan'
+      message: 'Gagal memperbarui buku. Id tidak ditemukan'
     })
     response.code(404)
     return response
