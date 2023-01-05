@@ -98,8 +98,21 @@ const handler = {
       }
     }
 
+    if (query.name) {
+      const regex = new RegExp(`${query.name}\\b`, 'i')
+
+      const response = h.response({
+        status: 'success',
+        data: {
+          books: books.filter((book) => regex.test(book.name)).map(hide)
+        }
+      })
+      response.code(200)
+      return response
+    }
+
     const response = h.response({
-      status: 'status',
+      status: 'success',
       data: {
         books: books.map(hide)
       }
